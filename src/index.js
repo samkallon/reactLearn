@@ -7,11 +7,12 @@ import reportWebVitals from './reportWebVitals';
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
     <App/>
-    );
+);
 
 
-if (module.hot){
-    module.hot.accept()
+// 不刷新页面热更新
+if (module.hot) {
+  module.hot.accept()
 }
 // If you want to start measuring performance in your app, pass a function
 // to log results (for example: reportWebVitals(console.log))

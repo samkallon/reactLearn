@@ -18,14 +18,52 @@ const list = [
     points: 5,
     objectID: 1,
   },
+  {
+    title: 'React-router',
+    url: 'Https://xxxxx',
+    author: 'sam',
+    num_comments: 3,
+    points: 5,
+    objectID: 2,
+  }
 ]
+const isSearched = searchTerm => item => {
+  return item.title.toLowerCase().includes(searchTerm.toLowerCase())
+}
+
+
+
 
 class App extends Component {
+  constructor(props) {
+    super(props);
+
+
+    this.state = {
+      list,
+      searchTerm: ''
+    };
+  }
+
+  onDismiss = function (id){
+    console.log('id:%s', id)
+    console.log(this)
+  }
+
+  onSearchChange = (e) => {
+    this.setState({searchTerm: e.target.value})
+  }
+
+
   render() {
+    const {searchTerm , list } = this.state
     return (
       <div className="App">
+        <form>
+          <input type="text" value={searchTerm} onChange={this.onSearchChange}/>
+        </form>
         {
-          list.map(item =>
+          list.filter(isSearched(searchTerm)).map(item =>
             <div key={item.objectID}>
               <span>
                 <a href={item.url}>{item.title}</a>
@@ -33,6 +71,12 @@ class App extends Component {
               <span>{item.author}</span>
               <span>{item.num_comments}</span>
               <span>{item.points}</span>
+              <span>
+                <button
+                  onClick={this.onDismiss.bind(this,item.objectID)}
+                  type="button"
+                >Dismiss</button>
+              </span>
             </div>)
         }
       </div>
