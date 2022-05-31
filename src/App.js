@@ -59,6 +59,15 @@ class App extends Component {
     const {searchTerm , list } = this.state
     return (
       <div className="App">
+        <Search
+        value={searchTerm}
+        onChange={this.onSearchChange}
+        ></Search>
+        <Table
+        list={list}
+        pattern={searchTerm}
+        onDismiss={this.onDismiss}
+        ></Table>
         <form>
           <input type="text" value={searchTerm} onChange={this.onSearchChange}/>
         </form>
@@ -83,5 +92,17 @@ class App extends Component {
     );
   }
 }
+
+class Search extends Component {
+  render() {
+    const {value, onChange} = this.props
+    return (
+      <div>
+
+      </div>
+    );
+  }
+}
+
 
 export default App
