@@ -1,8 +1,13 @@
 import React from 'react';
 import ReactDOM from "react-dom";
 import renderer from 'react-test-renderer'
-import App, { Search } from './App';
+import App, { Search,Button,Table } from './App';
 import fetch from 'isomorphic-fetch'
+
+import Enzyme, {shallow} from 'enzyme';
+import Adapter from 'enzyme-adapter-react-16';
+
+Enzyme.configure({ adapter: new Adapter() });
 
 describe('App', () => {
   it('renders without crashing', () => {
@@ -52,5 +57,13 @@ describe('Table',()=>{
     let tree = component.toJSON();
     expect(tree).toMatchSnapshot();
   });
+
+  it('shows two items in list',()=>{
+    // 浅渲染
+    const element = shallow(
+      <Table { ...props }></Table>
+    )
+    expect(element.find('.table-row').length).toBe(2)
+  })
 })
 
