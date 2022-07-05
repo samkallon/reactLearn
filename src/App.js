@@ -30,7 +30,7 @@ class App extends Component {
 
   render() {
     console.log(this.state)
-    const {searchTerm, results,searchKey,e} = this.state;
+    const {searchTerm, results,searchKey,error} = this.state;
     const page = (results && results[searchKey] && results[searchKey].page) || 0
     const list = (results && results[searchKey] && results[searchKey].hits) || []
     return (
@@ -48,7 +48,7 @@ class App extends Component {
           <Button onClick={()=>this.fetchSearchTopStories(searchKey,page+1)}>更多</Button>
         </div>
         {
-          e?
+          error?
             <div className={'interaction'}>
               <p>请求错误!</p>
             </div>
@@ -160,3 +160,9 @@ const Button = ({onClick, className = '', children}) =>
   </button>
 
 export default App;
+
+export {
+  Button,
+  Search,
+  Table
+}
