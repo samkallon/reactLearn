@@ -1,15 +1,19 @@
 import React, {Component} from 'react';
-import PropTypes from 'prop-types';
+import { sortBy } from 'lodash'
 import './App.css';
+import {Table} from './Table'
+import {Search} from './Search'
+import {Button, ButtonWithLoading } from './Button'
+import classNames from "classnames";
 
-let DEFAULT_QUERY = 'redux'
-// error
-// const PATH_BASE = 'https://hn.aolia.com/api/v1';
-// correct
-const PATH_BASE = 'https://hn.algolia.com/api/v1';
-const PATH_SEARCH = '/search'
-const PARAM_SEARCH = 'query='
-const PARAM_PAGE = 'page='
+import {
+  DEFAULT_QUERY,
+  PATH_BASE,
+  PATH_SEARCH,
+  PARAM_SEARCH,
+  PARAM_PAGE
+} from './constants'
+
 
 class App extends Component {
   constructor(props) {
@@ -20,7 +24,7 @@ class App extends Component {
       searchKey: '',
       searchTerm: DEFAULT_QUERY,
       error: null,
-      isLoading: false
+      isLoading: false,
     };
   }
 
@@ -32,7 +36,7 @@ class App extends Component {
 
   render() {
     console.log(this.state)
-    const {searchTerm, results, searchKey, error, isLoading} = this.state;
+    const {searchTerm, results, searchKey, error, isLoading, sortKey, isSortReverse} = this.state;
     const page = (results && results[searchKey] && results[searchKey].page) || 0
     const list = (results && results[searchKey] && results[searchKey].hits) || []
     return (
@@ -47,10 +51,10 @@ class App extends Component {
           </Search>
         </div>
         <div className='interactions'>
-          {isLoading
-            ?<Loading />
-            :<Button onClick={() => this.fetchSearchTopStories(searchKey, page + 1)}>更多</Button>
-          }
+          <ButtonWithLoading
+            isLoading={isLoading}
+            onClick={() => this.fetchSearchTopStories(searchKey, page + 1)}
+          >更多</ButtonWithLoading>
         </div>
         {
           error ?
@@ -65,6 +69,7 @@ class App extends Component {
       </div>
     );
   }
+
 
   onSearchSubmit = (event) => {
     const {searchTerm} = this.state
@@ -88,8 +93,8 @@ class App extends Component {
       results: {
         ...results,
         [searchKey]: {hits: updateHits, page},
-        isLoading:false
-      }
+      },
+      isLoading:false
     })
   }
   // 搜索方法
@@ -123,105 +128,4 @@ class App extends Component {
 
 }
 
-class Search extends Component {
-  componentDidMount() {
-    if (this.input) {
-      this.input.focus()
-    }
-  }
-
-  render() {
-    const {
-      value,
-      onChange,
-      onSubmit,
-      children
-    } = this.props
-    return (
-      <form onSubmit={onSubmit}>
-        {children}
-        <input
-          type="text"
-          value={value}
-          onChange={onChange}
-          ref={(node) => {
-            this.input = node
-          }}
-        />
-        <button type="submit">搜索</button>
-      </form>
-    );
-  }
-}
-
-// const Search = ({value, children,onSubmit,onChange}) =>
-//   <form onSubmit={onSubmit}>
-//     {children}
-//     <input
-//       type="text"
-//       value={value}
-//       onChange={onChange}
-//     />
-//     <button type="submit">搜索</button>
-//   </form>
-
-const Table = ({list, onDismiss}) =>
-  <div className="table">
-    {
-      list.map((item) => (
-        <div key={item.objectID} className='table-row'>
-          <span style={{width: '40%'}}>
-            <a href={item.url}>{item.title}</a>
-          </span>
-          <span style={{width: '30%'}}>{item.author}</span>
-          <span style={{width: '10%'}}>{item.num_comments}</span>
-          <span style={{width: '10%'}}>{item.points}</span>
-          <span style={{width: '10%'}}>
-                <Button onClick={() => onDismiss(item.objectID)}
-                        className='button-inline'
-                >
-                  Dismiss
-                </Button>
-              </span>
-        </div>
-      ))
-    }
-  </div>
-
-const Button = ({onClick, className = '', children}) =>
-  <button
-    onClick={onClick}
-    className={className}
-    type="button"
-  >
-    {children}
-  </button>
-
-const Loading = () =>
-  <div>Loading...</div>
-
-Button.propTypes = {
-  onClick: PropTypes.func.isRequired,
-  className: PropTypes.string,
-  children: PropTypes.node.isRequired
-}
-Table.propTypes = {
-  list: PropTypes.arrayOf(
-    PropTypes.shape({
-      objectID: PropTypes.string.isRequired,
-      author: PropTypes.string,
-      url: PropTypes.string,
-      num_comments: PropTypes.number,
-      points: PropTypes.number
-    })
-  ).isRequired,
-  onDismiss: PropTypes.func.isRequired
-}
-
 export default App;
-
-export {
-  Button,
-  Search,
-  Table
-}
